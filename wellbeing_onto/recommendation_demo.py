@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import json
+import uuid
 from pathlib import Path
 from datetime import datetime, UTC
+from tempfile import TemporaryDirectory
 
 from owlready2 import get_ontology
 
 from .recommender import recommend
 
+
 MATERIAL_ID_BY_TITLE = {
-    # Тесты 
+    # Тесты
     "DASS-21": "bc9f1204-ea5d-40b0-b367-359bf9b2cc21",
     "STAI": "3a9a3c8d-348e-4f0d-aefd-0feaa960ac25",
     "Шкала депрессии Бека": "33d10952-aed7-4a4e-9e5a-dbd01b2f294d",
@@ -23,7 +26,7 @@ MATERIAL_ID_BY_TITLE = {
     "Шкала эмоциональных схем": "c18d71a4-7a8b-4b32-9e2a-3f8e5d6c7b9a",
     "Tracker": "Tracker",
 
-    # Упражнения 
+    # Упражнения
     "Трекер настроения": "Tracker_ex",
     "Выявление горячих точек": "5f81cc8b-b057-47cb-96af-a0839d6c0ad9",
     "Как сделать..?": "9bfde30c-0aca-4ed8-abdf-b768b6b8f67f",
@@ -32,7 +35,7 @@ MATERIAL_ID_BY_TITLE = {
     "Релаксация": "",
     "Дыхательные техники": "",
 
-    # Теория 
+    # Теория
     "Основы КПТ": "22cbb105-8857-48de-806d-7242ced60a97",
     "Проф. выгорание": "557d4285-9271-4bd1-bb47-745e8fe79d9d",
     "Стратегии преодоления стресса": "ae2e831a-7a1a-431d-a7b6-17eded8e4c26",
@@ -95,9 +98,11 @@ TASK_CLASS_TO_RESPONSE_TYPE = {
     "ExerciseTask": "practice",
 }
 
+
 def load_user_json(path: str):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
 
 def resolve_material_title_by_input_id(material_id: str) -> str:
     if material_id in TITLE_BY_MATERIAL_ID:
@@ -107,6 +112,7 @@ def resolve_material_title_by_input_id(material_id: str) -> str:
 
 def get_material_id_by_title(title: str) -> str:
     return MATERIAL_ID_BY_TITLE.get(title, "")
+
 
 def _labels_of(individual) -> list[str]:
     try:
@@ -160,6 +166,7 @@ def find_target_concept(onto, ru_label: str):
 
     return (None, None)
 
+
 def normalize_input_to_targets(data: dict) -> list[dict]:
     input_test_id = data["test_id"]
     canonical_test_title = resolve_material_title_by_input_id(input_test_id)
@@ -175,7 +182,6 @@ def normalize_input_to_targets(data: dict) -> list[dict]:
         target_label = SCALE_TO_ONTOLOGY_TARGET.get(key)
 
         if target_label is None:
-            print(f"[WARN] Нет маппинга для ({canonical_test_title}, {scale_title})")
             continue
 
         normalized.append({
@@ -185,7 +191,8 @@ def normalize_input_to_targets(data: dict) -> list[dict]:
 
     return normalized
 
-def create_observations_from_json(onto, data: dict, user_name: str):
+
+def create_observations_from_payload(onto, data: dict, user_name: str):
     User = onto.User
     Observation = onto.Observation
 
@@ -208,7 +215,6 @@ def create_observations_from_json(onto, data: dict, user_name: str):
         target_kind, concept = find_target_concept(onto, target_label)
 
         if concept is None:
-            print(f"[WARN] Цель не найдена в онтологии: {target_label}")
             continue
 
         obs_name = (
@@ -234,6 +240,11 @@ def create_observations_from_json(onto, data: dict, user_name: str):
         created.append(obs)
 
     return user, created
+
+
+def create_observations_from_json(onto, data: dict, user_name: str):
+    return create_observations_from_payload(onto, data, user_name)
+
 
 def _infer_response_type(rec):
     try:
@@ -300,42 +311,67 @@ def save_output_json(path: str, payload):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
+
+def generate_recommendations_from_payload(
+    payload: dict,
+    ontology_path: str = "data/ontologies/wellbeing_app_demo_rules.owl",
+    user_name: str | None = None,
+):
+    request_user_name = user_name or f"user_api_{uuid.uuid4().hex[:12]}"
+
+    with TemporaryDirectory() as tmpdir:
+        tmpdir_path = Path(tmpdir)
+        runtime_owl_path = tmpdir_path / "result.owl"
+
+        onto = get_ontology(ontology_path).load()
+
+        user, obs = create_observations_from_payload(
+            onto=onto,
+            data=payload,
+            user_name=request_user_name,
+        )
+
+        if not obs:
+            return []
+
+        onto.save(file=str(runtime_owl_path))
+
+        recommend(
+            app_owl_path=str(runtime_owl_path),
+            out_owl_path=str(runtime_owl_path),
+            user_name=user.name,
+        )
+
+        onto = get_ontology(str(runtime_owl_path)).load()
+        user = onto.search_one(iri="*#" + user.name)
+
+        if user is None:
+            return []
+
+        return build_output_json(onto, user)
+
+
 def run_demo(
     ontology_path: str,
     json_path: str,
     user_name: str = "user_json_demo",
-    out_owl_path: str = "data/ontologies/result.owl",
     out_json_path: str = "recommendations.json",
 ):
-    
-    onto = get_ontology(ontology_path).load()
-
     data = load_user_json(json_path)
 
-    user, obs = create_observations_from_json(onto, data, user_name=user_name)
-
-    if not obs:
-        return
-
-    onto.save(file=out_owl_path)
-
-    recommend(
-        app_owl_path=out_owl_path,
-        out_owl_path=out_owl_path,
-        user_name=user.name,
+    payload = generate_recommendations_from_payload(
+        payload=data,
+        ontology_path=ontology_path,
+        user_name=user_name,
     )
 
-    onto = get_ontology(out_owl_path).load()
-    user = onto.search_one(iri="*#" + user.name)
-
-    payload = build_output_json(onto, user)
     save_output_json(out_json_path, payload)
+
 
 if __name__ == "__main__":
     run_demo(
         ontology_path="data/ontologies/wellbeing_app_demo_rules.owl",
         json_path="user_data.json",
         user_name="user_json_demo",
-        out_owl_path="data/ontologies/result.owl",
         out_json_path="recommendations.json",
     )

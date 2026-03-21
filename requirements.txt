@@ -1,1 +1,4 @@
+fastapi
+uvicorn
+pydantic
 owlready2>=0.50
