@@ -94,9 +94,9 @@
   <rdfs:range>
     <owl:Class>
       <owl:unionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Exercise"/>
         <rdf:Description rdf:about="#InternalFactor"/>
         <rdf:Description rdf:about="#Indicator"/>
-        <rdf:Description rdf:about="#Exercise"/>
       </owl:unionOf>
     </owl:Class>
   </rdfs:range>
@@ -125,8 +125,8 @@
   <rdfs:domain>
     <owl:Class>
       <owl:unionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Theory"/>
         <rdf:Description rdf:about="#Indicator"/>
-        <rdf:Description rdf:about="#Exercise"/>
       </owl:unionOf>
     </owl:Class>
   </rdfs:domain>
@@ -675,7 +675,7 @@
 </owl:Class>
 
 <owl:Class rdf:about="#Relaksatsiya">
-  <rdfs:subClassOf rdf:resource="#Exercise"/>
+  <rdfs:subClassOf rdf:resource="#Theory"/>
   <rdfs:subClassOf>
     <owl:Restriction>
       <owl:onProperty rdf:resource="#Reduces"/>
@@ -693,7 +693,7 @@
 </owl:Class>
 
 <owl:Class rdf:about="#DyhatelnyeTehniki">
-  <rdfs:subClassOf rdf:resource="#Exercise"/>
+  <rdfs:subClassOf rdf:resource="#Theory"/>
   <rdfs:subClassOf>
     <owl:Restriction>
       <owl:onProperty rdf:resource="#Reduces"/>
@@ -1305,6 +1305,22 @@
   <originClassIri rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://example.org/wellbeing-ontology#SklonnostKVygoraniyu</originClassIri>
 </owl:NamedIndividual>
 
+<owl:NamedIndividual rdf:about="#task_theory_Relaksatsiya">
+  <rdf:type rdf:resource="#TheoryTask"/>
+  <targetsIndicator rdf:resource="#concept_indicator_VosprinimaemyyStress"/>
+  <targetsIndicator rdf:resource="#concept_indicator_Trevoga"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Релаксация</rdfs:label>
+  <originClassIri rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://example.org/wellbeing-ontology#Relaksatsiya</originClassIri>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#task_theory_DyhatelnyeTehniki">
+  <rdf:type rdf:resource="#TheoryTask"/>
+  <targetsIndicator rdf:resource="#concept_indicator_VosprinimaemyyStress"/>
+  <targetsIndicator rdf:resource="#concept_indicator_Trevoga"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Дыхательные техники</rdfs:label>
+  <originClassIri rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://example.org/wellbeing-ontology#DyhatelnyeTehniki</originClassIri>
+</owl:NamedIndividual>
+
 <owl:NamedIndividual rdf:about="#task_theory_OsnovyKpt">
   <rdf:type rdf:resource="#TheoryTask"/>
   <targetsFactor rdf:resource="#concept_factor_KognitivnyeIskazheniya"/>
@@ -1387,22 +1403,6 @@
   <rdf:type rdf:resource="#ExerciseTask"/>
   <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Дневник мыслей</rdfs:label>
   <originClassIri rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://example.org/wellbeing-ontology#DnevnikMysley</originClassIri>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#task_exercise_Relaksatsiya">
-  <rdf:type rdf:resource="#ExerciseTask"/>
-  <targetsIndicator rdf:resource="#concept_indicator_VosprinimaemyyStress"/>
-  <targetsIndicator rdf:resource="#concept_indicator_Trevoga"/>
-  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Релаксация</rdfs:label>
-  <originClassIri rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://example.org/wellbeing-ontology#Relaksatsiya</originClassIri>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#task_exercise_DyhatelnyeTehniki">
-  <rdf:type rdf:resource="#ExerciseTask"/>
-  <targetsIndicator rdf:resource="#concept_indicator_VosprinimaemyyStress"/>
-  <targetsIndicator rdf:resource="#concept_indicator_Trevoga"/>
-  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Дыхательные техники</rdfs:label>
-  <originClassIri rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://example.org/wellbeing-ontology#DyhatelnyeTehniki</originClassIri>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#task_test_Dass21">
@@ -1510,7 +1510,7 @@
   <observedBy rdf:resource="#user_demo"/>
   <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Наблюдение: воспринимаемый стресс</rdfs:label>
   <observationValue rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.85</observationValue>
-  <observationTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2026-03-19T07:03:19.732</observationTime>
+  <observationTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2026-03-23T05:22:17.039</observationTime>
   <observationSource rdf:datatype="http://www.w3.org/2001/XMLSchema#string">self_report_scale</observationSource>
 </owl:NamedIndividual>
 
@@ -1533,7 +1533,7 @@
   <rdf:type rdf:resource="#Rule"/>
   <ruleForIndicator rdf:resource="#concept_indicator_VosprinimaemyyStress"/>
   <ruleMinSeverity rdf:resource="#SeverityMedium"/>
-  <ruleRecommendsTask rdf:resource="#task_exercise_DyhatelnyeTehniki"/>
+  <ruleRecommendsTask rdf:resource="#task_theory_DyhatelnyeTehniki"/>
   <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">rule_perceived_stress_medium_breathing</rdfs:label>
   <ruleWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</ruleWeight>
   <ruleWhy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">При повышенном воспринимаемом стрессе полезны дыхательные техники.</ruleWhy>
@@ -1545,7 +1545,7 @@ Observation(?obs) ^ aboutIndicator(?obs, :concept_indicator_VosprinimaemyyStress
   <rdf:type rdf:resource="#Rule"/>
   <ruleForIndicator rdf:resource="#concept_indicator_VosprinimaemyyStress"/>
   <ruleMinSeverity rdf:resource="#SeverityMedium"/>
-  <ruleRecommendsTask rdf:resource="#task_exercise_Relaksatsiya"/>
+  <ruleRecommendsTask rdf:resource="#task_theory_Relaksatsiya"/>
   <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">rule_perceived_stress_medium_relax</rdfs:label>
   <ruleWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</ruleWeight>
   <ruleWhy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Релаксация помогает снижать воспринимаемый стресс.</ruleWhy>
@@ -1568,7 +1568,7 @@ Observation(?obs) ^ aboutIndicator(?obs, :concept_indicator_VosprinimaemyyStress
   <rdf:type rdf:resource="#Rule"/>
   <ruleForIndicator rdf:resource="#concept_indicator_Trevozhnost"/>
   <ruleMinSeverity rdf:resource="#SeverityMedium"/>
-  <ruleRecommendsTask rdf:resource="#task_exercise_DyhatelnyeTehniki"/>
+  <ruleRecommendsTask rdf:resource="#task_theory_DyhatelnyeTehniki"/>
   <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">rule_anxiety_medium_breathing</rdfs:label>
   <ruleWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</ruleWeight>
   <ruleWhy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Дыхательные техники помогают снизить выраженность тревоги.</ruleWhy>
@@ -1580,7 +1580,7 @@ Observation(?obs) ^ aboutIndicator(?obs, :concept_indicator_Trevozhnost) ^ hasSe
   <rdf:type rdf:resource="#Rule"/>
   <ruleForIndicator rdf:resource="#concept_indicator_Trevozhnost"/>
   <ruleMinSeverity rdf:resource="#SeverityMedium"/>
-  <ruleRecommendsTask rdf:resource="#task_exercise_Relaksatsiya"/>
+  <ruleRecommendsTask rdf:resource="#task_theory_Relaksatsiya"/>
   <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">rule_anxiety_medium_relax</rdfs:label>
   <ruleWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</ruleWeight>
   <ruleWhy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Релаксация помогает при тревожности.</ruleWhy>
