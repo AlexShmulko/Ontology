@@ -43,15 +43,15 @@
   "test_id": "bc9f1204-ea5d-40b0-b367-359bf9b2cc21",
   "scale_results": [
     {
-      "scale_title": "Stress",
+      "scale_title": "Стресс",
       "score": 13
     },
     {
-      "scale_title": "Anxiety",
+      "scale_title": "Тревожность",
       "score": 9
     },
     {
-      "scale_title": "Depression",
+      "scale_title": "Депрессия",
       "score": 11
     }
   ]
@@ -64,12 +64,12 @@
 
 [
     {
-        "type": "practice",
-        "material_id": ""
+        "type": "theory",
+        "material_id": "8cd36279-61f0-4959-99de-0a642959e08b"
     },
     {
-        "type": "practice",
-        "material_id": ""
+        "type": "theory",
+        "material_id": "686dd773-7f39-405f-807a-7a6024f982b8"
     },
     {
         "type": "practice",
