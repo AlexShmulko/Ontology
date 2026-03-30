@@ -46,7 +46,7 @@ THRESHOLD_RULES = {
     "Эмоциональные затруднения": {"threshold": 1.2, "direction": "gte"},
     "Когнитивные затруднения": {"threshold": 1.8, "direction": "gte"},
     "Вторичные симптомы": {"threshold": 1.7, "direction": "gte"},
-    "Настроение": {"threshold": 50.0, "direction": "gte"},
+    "Настроение": {"threshold": 50.0, "direction": "lte"},
 }
 
 SOURCE_ALIASES = {
